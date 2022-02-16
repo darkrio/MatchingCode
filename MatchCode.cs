@@ -1,16 +1,20 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Aspose.Cells;
 
-namespace MatchingCode.UI
+namespace MatchingCode
 {
     public partial class MatchCode : Form
     {
         private string exceld = "";
         private string excelc = "";
+        private string filepath = "";
+        private string existeddata = "";
+        private Workbook workbook = null;
 
         public MatchCode()
         {
@@ -20,7 +24,7 @@ namespace MatchingCode.UI
                 @"Noted:
 病例组:数据列A=>G，A:PATIENT_ID B:SEX C:AGE
 对比组:数据列A=>G，A:PATIENT_ID B:SEX C:AGE D:TEST_NO E:REPORT_ITEM_NAME F:RESULT G:SOURCE
-保证两份数据文件中的表头与程序中的标注一致，否则会报错(卡住)";
+保证两份数据文件中的表头与程序中的标注一致，否则会报错(卡住)";           
         }
 
         private void btnExe_Click(object sender, EventArgs e)
@@ -121,7 +125,9 @@ namespace MatchingCode.UI
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 this.tbxExcelD.Text = dialog.FileName;
-                exceld = dialog.FileName;
+                exceld = dialog.FileName;             
+                filepath = Path.GetDirectoryName(dialog.FileName) + "\\Log-" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+                File.AppendAllText(filepath, Environment.NewLine + "[" + DateTime.Now.ToString() + "]" + "系统初始化开始处理..." + Environment.NewLine);
             }
         }
 
@@ -140,13 +146,12 @@ namespace MatchingCode.UI
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            string existeddata = "";
             if (exceld != "" && excelc != "")
             {
                 string urlDisease = exceld; //病例组的文件
                 string urlCompared = excelc;  //对照组的数据文件
                 this.backgroundWorker1.ReportProgress(0, "[" + DateTime.Now.ToString() + "]" + "病例组与对比组文件输入程序中..." + Environment.NewLine);
-                Workbook workbook; Workbook workbookC; Cells cellsC; DataTable dtExcelC;
+                Workbook workbookC; Cells cellsC; DataTable dtExcelC;
                 try
                 {
                     workbookC = new Workbook(urlCompared);
@@ -162,22 +167,25 @@ namespace MatchingCode.UI
                 {
                     this.backgroundWorker1.ReportProgress(0, "[" + DateTime.Now.ToString() + "]" + "病例组文件路径不正确。请检查后再执行。" + ex.Message + Environment.NewLine); return;
                 }
-                foreach (Worksheet sheet in workbook.Worksheets)
+                for (int k = 0; k < workbook.Worksheets.Count; k++)
                 {
-                    this.backgroundWorker1.ReportProgress(25, "[" + DateTime.Now.ToString() + "]" + "导入成功开始对比操作..." + Environment.NewLine);
-                    Cells cells = sheet.Cells;
+                    Worksheet wb = workbook.Worksheets[k];
+                    this.backgroundWorker1.ReportProgress(5, "[" + DateTime.Now.ToString() + "]" + "导入成功开始对比操作..." + Environment.NewLine);
+                    Cells cells = wb.Cells;
                     var styles = cells["A1"].GetStyle();
                     cells["H1"].PutValue("ControlGroup:");
-                    cells["I1"].PutValue("PATIENT_ID"); 
-                    cells["J1"].PutValue("SEX"); 
-                    cells["K1"].PutValue("AGE"); 
-                    cells["L1"].PutValue("TEST_NO"); 
+                    cells["I1"].PutValue("PATIENT_ID");
+                    cells["J1"].PutValue("SEX");
+                    cells["K1"].PutValue("AGE");
+                    cells["L1"].PutValue("TEST_NO");
                     cells["M1"].PutValue("REPORT_ITEM_NAME");
                     cells["N1"].PutValue("RESULT");
                     cells["O1"].PutValue("SOURCE");
 
                     for (int i = 2; i < cells.Rows.Count + 1; i++)//从第二行开始处理数据
                     {
+                        int size = cells.Rows.Count;
+                        int progress = ((i - 1) / size) * 94 + 5;
                         if (cells["A" + i.ToString()] != null && cells["A" + i.ToString()].Value != null)
                         {
                             if (!String.IsNullOrEmpty(cells["A" + i.ToString()].Value.ToString())) //患者识别号不为空
@@ -188,8 +196,8 @@ namespace MatchingCode.UI
                                     comparedNum = GetComparedData(dtExcelC, cells["B" + i.ToString()].Value.ToString(), int.Parse(cells["C" + i.ToString()].Value.ToString().Replace("岁", "")), existeddata);
                                 }
                                 catch (Exception ex)
-                                { 
-                                    this.backgroundWorker1.ReportProgress(30, "[" + DateTime.Now.ToString() + "]" + "病例组字段不正确，请检查后再执行。" + ex.Message + Environment.NewLine); return; 
+                                {
+                                    this.backgroundWorker1.ReportProgress(progress, "[" + DateTime.Now.ToString() + "]" + "病例组字段不正确，请检查后再执行。" + ex.Message + Environment.NewLine); return;
                                 }
                                 if (comparedNum != "")
                                 {
@@ -209,27 +217,27 @@ namespace MatchingCode.UI
                                             cells["M" + i.ToString()].PutValue(newDT.Rows[0]["REPORT_ITEM_NAME"].ToString());
                                             cells["N" + i.ToString()].PutValue(newDT.Rows[0]["RESULT"].ToString());
                                             cells["O" + i.ToString()].PutValue(newDT.Rows[0]["SOURCE"].ToString());
-                                            this.backgroundWorker1.ReportProgress(50, "[" + DateTime.Now.ToString() + "]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "查询到对照组编号：" + newDT.Rows[0]["PATIENT_ID"].ToString() + Environment.NewLine);
+                                            this.backgroundWorker1.ReportProgress(progress, "[" + DateTime.Now.ToString() + "]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "查询到对照组编号：" + newDT.Rows[0]["PATIENT_ID"].ToString() + Environment.NewLine);
                                         }
-                                        catch(Exception ex) 
+                                        catch (Exception ex)
                                         {
-                                            this.backgroundWorker1.ReportProgress(30, "[" + DateTime.Now.ToString() + "]" + "对比组字段不正确，请检查后再执行。" + ex.Message + Environment.NewLine); return;
-                                        }                
+                                            this.backgroundWorker1.ReportProgress(progress, "[" + DateTime.Now.ToString() + "]" + "对比组字段不正确，请检查后再执行。" + ex.Message + Environment.NewLine); return;
+                                        }
                                     }
                                     else
                                     {
-                                        this.backgroundWorker1.ReportProgress(50, "[" + DateTime.Now.ToString() + "]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "没有合适的匹配。" + Environment.NewLine);
+                                        this.backgroundWorker1.ReportProgress(progress, "[" + DateTime.Now.ToString() + "]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "没有合适的匹配。" + Environment.NewLine);
                                     }
 
                                 }
                             }
                             else
-                                this.backgroundWorker1.ReportProgress(50, "[" + DateTime.Now.ToString() + "]" + "PATIENT_ID为空。" + Environment.NewLine);
+                                this.backgroundWorker1.ReportProgress(progress, "[" + DateTime.Now.ToString() + "]" + "PATIENT_ID为空。" + Environment.NewLine);
                         }
                     }
                     for (int col = 0; col < cells.MaxColumn; col++)
                     {
-                        sheet.AutoFitColumn(col, 0, cells.MaxRow);
+                        wb.AutoFitColumn(col, 0, cells.MaxRow);
                     }
                 }
                 workbook.Save(urlDisease);
@@ -237,21 +245,34 @@ namespace MatchingCode.UI
             }
         }
 
-        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private async void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             string message = e.UserState.ToString();
             this.rtbLogs.Text += message;
+            pBarExecuting.Value = e.ProgressPercentage;
+            await File.AppendAllTextAsync(filepath, message);
         }
 
-        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private async void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
+            await File.AppendAllTextAsync(filepath, "[" + DateTime.Now.ToString() + "]" + "异步程序处理完成。" + Environment.NewLine);
         }
 
         private void rtbLogs_TextChanged(object sender, EventArgs e)
         {
             rtbLogs.SelectionStart = rtbLogs.Text.Length;
             rtbLogs.ScrollToCaret();
+        }
+
+        private void MatchCode_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (workbook != null && exceld != "" && excelc != "")
+            {
+                workbook.Save(exceld);
+                File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "程序窗口意外关闭，程序已退出，文件已保存。" + Environment.NewLine);
+            }
+            else if (filepath != "")
+                File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "程序窗口意外关闭，程序已退出，" + Environment.NewLine);
         }
     }
 }

@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageIcon>matching-icon.png</PackageIcon>
+    <PackageIconUrl />
+    <Authors>darkrio</Authors>
+    <Product>MatchingCode</Product>
+    <Company>Riots</Company>
+    <PackageProjectUrl>https://github.com/darkrio/MatchingCode</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/darkrio/MatchingCode</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <ApplicationIcon>matching-ico.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="AD-ALB.xlsx" />
+    <None Remove="Control-ALB%281%29.xlsx" />
+    <None Remove="PD-ALB - 副本.xlsx" />
+    <None Remove="PD-ALB.xlsx" />
+    <None Remove="总对照组.xlsx" />
+    <None Include="matching-icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Aspose.Cells">
+      <HintPath>Aspose.Cells.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
