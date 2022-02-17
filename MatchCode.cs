@@ -15,15 +15,22 @@ namespace MatchingCode
         private string exceld = "";
         private string excelc = "";
         private string filepath = "";
-        private static string existeddata = "";
+        private string existeddata = "";
         private Workbook workbook = null;
-        private static int progressnumber = 5 * 2000;
+        private int progressnumber = 5 * 2000;
+
+        private const string codetype = "2";
+
+        private ParallelOptions options = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = 20
+        };
 
         public MatchCode()
         {
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             InitializeComponent();
-            this.rtbLogs.Text =
+            rtbLogs.Text =
                 @"Noted:
 病例组:数据列A=>G，A:PATIENT_ID B:SEX C:AGE
 对比组:数据列A=>G，A:PATIENT_ID B:SEX C:AGE D:TEST_NO E:REPORT_ITEM_NAME F:RESULT G:SOURCE
@@ -32,77 +39,149 @@ namespace MatchingCode
 
         private void btnExe_Click(object sender, EventArgs e)
         {
-            this.rtbLogs.Text = "";
+            rtbLogs.Text = "";
             backgroundWorker1.RunWorkerAsync();
         }
            
-        private static string GetComparedData(DataTable dt, string gender, int age, string dtesxit)
+        private string GetComparedData(DataTable dt, string gender, int age, string dtesxit)
         {
+            int count; string number; DataTable dt0;
             DataRow[] drs = dt.Select("SEX = '" + gender + "' and AGE = " + age);
-            if (drs.Length > 0)
-            { 
-                DataTable dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
-                if (dt0.Rows.Count == 0) goto Next;
-                int count = dt0.Rows.Count - 1;
-                string number = dt0.Rows[new Random().Next(0, count)]["PATIENT_ID"].ToString();
-                return number;
-            }
-            else
+            if (codetype == "1")
             {
-                drs = dt.Select("SEX = '" + gender + "' and AGE <= " + age, "AGE DESC");
                 if (drs.Length > 0)
                 {
-                    DataTable dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
-                    if (dt0.Rows.Count == 0) goto Next2;
-                    int count = dt0.Rows.Count - 1;
-                    string number = dt0.Rows[new Random().Next(0, count)]["PATIENT_ID"].ToString();
-                    return number;
+                    dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
+                    if (dt0.Rows.Count == 0)
+                    {
+                        drs = dt.Select("SEX = '" + gender + "' and AGE < " + age, "AGE");
+                        if (drs.Length > 0)
+                        {
+                            dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
+                            if (dt0.Rows.Count == 0)
+                            {
+                                drs = dt.Select("SEX = '" + gender + "' and AGE > " + age, "AGE");
+                                {
+                                    dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
+                                    if (dt0.Rows.Count == 0)
+                                    {
+                                        return "";
+                                    }
+
+                                    count = dt0.Rows.Count - 1;
+                                    number = dt0.Rows[new Random().Next(0, count)]["PATIENT_ID"].ToString();
+                                    return number;
+                                }
+                            }
+                            else
+                            {
+                                count = dt0.Rows.Count - 1;
+                                number = dt0.Rows[new Random().Next(0, count)]["PATIENT_ID"].ToString();
+                                return number;
+                            }
+                        }
+                        else
+                        {
+                            drs = dt.Select("SEX = '" + gender + "' and AGE > " + age, "AGE");
+                            {
+                                dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
+                                if (dt0.Rows.Count != 0)
+                                {
+                                    count = dt0.Rows.Count - 1;
+                                    number = dt0.Rows[new Random().Next(0, count)]["PATIENT_ID"].ToString();
+                                    return number;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        count = dt0.Rows.Count - 1;
+                        number = dt0.Rows[new Random().Next(0, count)]["PATIENT_ID"].ToString();
+                        return number;
+                    }
                 }
                 else
                 {
-                    drs = dt.Select("SEX = '" + gender + "' and AGE >= " + age, "AGE ASC");
+                    drs = dt.Select("SEX = '" + gender + "' and AGE < " + age, "AGE");
+                    if (drs.Length > 0)
                     {
-                        DataTable dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
-                        if (dt0.Rows.Count == 0) return "";
-                        int count = dt0.Rows.Count - 1;
-                        string number = dt0.Rows[new Random().Next(0, count)]["PATIENT_ID"].ToString();
+                        dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
+                        if (dt0.Rows.Count == 0)
+                        {
+                            drs = dt.Select("SEX = '" + gender + "' and AGE > " + age, "AGE");
+                            {
+                                dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
+                                if (dt0.Rows.Count != 0)
+                                {
+                                    count = dt0.Rows.Count - 1;
+                                    number = dt0.Rows[new Random().Next(0, count)]["PATIENT_ID"].ToString();
+                                    return number;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            count = dt0.Rows.Count - 1;
+                            number = dt0.Rows[new Random().Next(0, count)]["PATIENT_ID"].ToString();
+                            return number;
+                        }
+                    }
+                    else
+                    {
+                        drs = dt.Select("SEX = '" + gender + "' and AGE > " + age, "AGE");
+                        {
+                            dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
+                            if (dt0.Rows.Count != 0)
+                            {
+                                count = dt0.Rows.Count - 1;
+                                number = dt0.Rows[new Random().Next(0, count)]["PATIENT_ID"].ToString();
+                                return number;
+                            }
+                        }
+                    }
+                }
+            }
+            else if (codetype == "2") 
+            {
+                if (drs.Length > 0)
+                {
+                    dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
+                    if (dt0.Rows.Count == 0)
+                    {
+                        drs = age >= 5
+                            ? dt.Select("SEX = '" + gender + "' and AGE > " + (age - 5).ToString() + " and AGE < " + (age + 5).ToString())
+                            : dt.Select("SEX = '" + gender + "' and AGE > 0 and AGE < " + (age + 5).ToString());
+                        if (drs.Length > 0)
+                        {
+                            dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
+                            if (dt0.Rows.Count > 0)
+                            {
+                                count = dt0.Rows.Count - 1;
+                                number = dt0.Rows[new Random().Next(0, count)]["PATIENT_ID"].ToString();
+                                return number;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        count = dt0.Rows.Count - 1;
+                        number = dt0.Rows[new Random().Next(0, count)]["PATIENT_ID"].ToString();
                         return number;
                     }
                 }
             }
-
-            Next:
-            drs = dt.Select("SEX = '" + gender + "' and AGE <= " + age, "AGE DESC");
-            if (drs.Length > 0)
-            {
-                DataTable dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
-                if (dt0.Rows.Count == 0) goto Next2;
-                int count = dt0.Rows.Count - 1;
-                string number = dt0.Rows[new Random().Next(0, count)]["PATIENT_ID"].ToString();
-                return number;
-            }
-
-            Next2:
-            drs = dt.Select("SEX = '" + gender + "' and AGE >= " + age, "AGE ASC");
-            if (drs.Length > 0)
-            {
-                DataTable dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
-                if (dt0.Rows.Count == 0) return "";
-                int count = dt0.Rows.Count - 1;
-                string number = dt0.Rows[new Random().Next(0, count)]["PATIENT_ID"].ToString();
-                return number;
-            }
-
             return "";
         }
 
-        private static DataTable FilterData(DataTable oldTable, string e) 
+        private DataTable FilterData(DataTable oldTable, string e) 
         {
             DataTable newTable = oldTable.Clone();
-            foreach (DataRow dr in oldTable.Rows) 
+            foreach (var dr in from DataRow dr in oldTable.Rows
+                               where !e.Contains(dr["PATIENT_ID"].ToString())
+                               select dr)
             {
-                if (!e.Contains(dr["PATIENT_ID"].ToString()))
-                    newTable.Rows.Add(dr.ItemArray);
+                newTable.Rows.Add(dr.ItemArray);
             }
             newTable.AcceptChanges();
             return newTable;
@@ -110,48 +189,57 @@ namespace MatchingCode
         private void tbxExcelD_TextChanged(object sender, EventArgs e)
         {
             if (tbxExcelD.Text != "")
+            {
                 exceld = tbxExcelD.Text;
+            }
         }
 
         private void tbxExcelC_TextChanged(object sender, EventArgs e)
         {
             if (tbxExcelC.Text != "")
+            {
                 excelc = tbxExcelC.Text;
+            }
         }
 
         private void btnOpen1_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Title = "Select file";
-            dialog.InitialDirectory = ".\\";
-            dialog.Filter = "xls files (*.*)|*.xlsx";
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                Title = "选择文件",
+                InitialDirectory = ".\\",
+                Filter = "xls files (*.*)|*.xlsx"
+            };
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                this.tbxExcelD.Text = dialog.FileName;
+                tbxExcelD.Text = dialog.FileName;
                 exceld = dialog.FileName;             
                 filepath = Path.GetDirectoryName(dialog.FileName) + "\\Log-" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
-                System.IO.File.AppendAllText(filepath, Environment.NewLine + "[" + DateTime.Now.ToString() + "]" + "系统初始化开始处理..." + Environment.NewLine);
+                File.AppendAllText(filepath, Environment.NewLine + "[" + DateTime.Now.ToString() + "]" + "系统初始化开始处理..." + Environment.NewLine);
             }
         }
 
         private void btnOpen2_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Title = "Select file";
-            dialog.InitialDirectory = ".\\";
-            dialog.Filter = "xls files (*.*)|*.xlsx";
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                Title = "选择文件",
+                InitialDirectory = ".\\",
+                Filter = "xls files (*.*)|*.xlsx"
+            };
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                this.tbxExcelC.Text = dialog.FileName;
+                tbxExcelC.Text = dialog.FileName;
                 excelc = dialog.FileName;
             }
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-        {
+        { 
             if (exceld != "" && excelc != "")
             {
-                this.backgroundWorker1.ReportProgress(0, "[" + DateTime.Now.ToString() + "]" + "[" + 0 + "%]" + "病例组与对比组文件输入程序中（大文件时间较长）..." + Environment.NewLine);
+                bool IsCompleted = false;
+                backgroundWorker1.ReportProgress(0, "[" + DateTime.Now.ToString() + "]" + "[" + 0 + "%]" + "病例组与对比组文件输入程序中（大文件时间较长）..." + Environment.NewLine);
                 DataTable dtExcelC;
                 try
                 {
@@ -160,7 +248,7 @@ namespace MatchingCode
                 }
                 catch (Exception ex)
                 {
-                    this.backgroundWorker1.ReportProgress(0, "[" + DateTime.Now.ToString() + "]" + "[" + 0 + "%]" + "对比组文件路径格式不正确。请检查后再执行。" + ex.Message + Environment.NewLine); return;
+                    backgroundWorker1.ReportProgress(0, "[" + DateTime.Now.ToString() + "]" + "[" + 0 + "%]" + "对比组文件路径格式不正确。请检查后再执行。" + ex.Message + Environment.NewLine); return;
                 }
                 try
                 {
@@ -168,28 +256,28 @@ namespace MatchingCode
                 }
                 catch (Exception ex)
                 {
-                    this.backgroundWorker1.ReportProgress(0, "[" + DateTime.Now.ToString() + "]" + "[" + 0 + "%]" + "病例组文件路径不正确。请检查后再执行。" + ex.Message + Environment.NewLine); return;
+                    backgroundWorker1.ReportProgress(0, "[" + DateTime.Now.ToString() + "]" + "[" + 0 + "%]" + "病例组文件路径不正确。请检查后再执行。" + ex.Message + Environment.NewLine); return;
                 }
                 for (int k = 0; k < workbook.Worksheets.Count; k++)
                 {
+                    IsCompleted = false;
                     Worksheet wb = workbook.Worksheets[k];
-                    this.backgroundWorker1.ReportProgress(5, "[" + DateTime.Now.ToString() + "]" + "[" + 5 + "%]" + "导入成功开始对比操作..." + Environment.NewLine);
+                    backgroundWorker1.ReportProgress(5, "[" + DateTime.Now.ToString() + "]" + "[" + 5 + "%]" + "导入成功开始对比操作..." + Environment.NewLine);
                     Cells cells = wb.Cells;
                     SetHeaders(cells);
                     for (int col = 0; col < cells.MaxColumn; col++)
                     {
                         wb.AutoFitColumn(col, 0, cells.MaxRow);
                     }
-                    Parallel.For(1, cells.Rows.Count + 1,
+                    var result = Parallel.For(1, cells.Rows.Count + 1, options ,
                i =>
                {
-                   double c = 1.0 / double.Parse(cells.Count.ToString());
-                   Interlocked.Add(ref progressnumber, int.Parse(Math.Floor(c * 100 * 2000).ToString()));
+                   Interlocked.Add(ref progressnumber, int.Parse(Math.Floor(1.0 / double.Parse(cells.Count.ToString()) * 100 * 2000).ToString()));
                    int num = progressnumber / 2000;
                    double number = double.Parse(progressnumber.ToString()) / 2000.0;
                    if (cells["A" + i.ToString()] != null && cells["A" + i.ToString()].Value != null)
                    {
-                       if (!String.IsNullOrEmpty(cells["A" + i.ToString()].Value.ToString())) //患者识别号不为空
+                       if (!string.IsNullOrEmpty(cells["A" + i.ToString()].Value.ToString())) //患者识别号不为空
                        {
                            string comparedNum = "";
                            try
@@ -199,7 +287,9 @@ namespace MatchingCode
                            catch (Exception ex)
                            {
                                if (i != 1)
-                                   this.backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "病例组字段数据不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
+                               {
+                                   backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "病例组字段数据不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
+                               }
                            }
                            if (comparedNum != "")
                            {
@@ -225,32 +315,38 @@ namespace MatchingCode
                                            cells["N" + i.ToString()].PutValue(newDT.Rows[0]["RESULT"].ToString());
                                            cells["O" + i.ToString()].PutValue(newDT.Rows[0]["SOURCE"].ToString());
                                        }
-                                       this.backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "查询到对照组编号：" + newDT.Rows[0]["PATIENT_ID"].ToString() + Environment.NewLine);
+                                       backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "查询到对照组编号：" + newDT.Rows[0]["PATIENT_ID"].ToString() + Environment.NewLine);
                                    }
                                    catch (Exception ex)
                                    {
-                                       this.backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "对比组字段不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
+                                       backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "对比组字段不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
                                    }
                                }
                                else
                                {
-                                   this.backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "没有合适的匹配。" + Environment.NewLine);
+                                   backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "没有合适的匹配。" + Environment.NewLine);
                                }
                            }
                        }
                        else
-                           this.backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "PATIENT_ID为空。" + Environment.NewLine);
+                       {
+                           backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "PATIENT_ID为空。" + Environment.NewLine);
+                       }
                    }
                });
+                    if (result.IsCompleted)
+                        IsCompleted = true;
+
                 }
-                Thread.Sleep(2000);
-                this.backgroundWorker1.ReportProgress(100, "[" + DateTime.Now.ToString() + "]" + "[" + 100 + "%]" + "执行完毕。请检查文件输出。" + Environment.NewLine);
+                if (!IsCompleted)
+                    Thread.Sleep(2000);
+                backgroundWorker1.ReportProgress(100, "[" + DateTime.Now.ToString() + "]" + "[" + 100 + "%]" + "执行完毕。请检查文件输出。" + Environment.NewLine);
             }
         }
 
         private void SetHeaders(Cells cells) 
         {
-            var styles = cells["A1"].GetStyle();
+            Style styles = cells["A1"].GetStyle();
             cells["H1"].PutValue("ControlGroup:");
             cells["H1"].SetStyle(styles);
             cells["I1"].PutValue("PATIENT_ID");
@@ -272,15 +368,22 @@ namespace MatchingCode
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             string message = e.UserState.ToString();
-            this.rtbLogs.Text += message;
+            rtbLogs.Text += message;
             pBarExecuting.Value = e.ProgressPercentage;
             File.AppendAllText(filepath, message);
         }
 
         private void BackgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            workbook.Save(exceld);
-            File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "异步程序处理完成。" + Environment.NewLine);
+            try
+            {
+                workbook.Save(exceld);
+                File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "异步程序处理完成。" + Environment.NewLine);
+            }
+            catch (Exception)
+            {
+                File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "异步程序处理完成，程序异常已退出。" + Environment.NewLine);
+            }
         }
 
         private void rtbLogs_TextChanged(object sender, EventArgs e)
@@ -298,14 +401,16 @@ namespace MatchingCode
                     workbook.Save(exceld);
                     File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "程序已退出，文件已保存。" + Environment.NewLine);
                 }
-                catch(Exception ex) 
+                catch (Exception)
                 {
                     File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "程序已退出。" + Environment.NewLine);
                 }
 
             }
             else if (filepath != "")
+            {
                 File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "程序窗口意外关闭，程序已退出。" + Environment.NewLine);
+            }
         }
     }
 }
