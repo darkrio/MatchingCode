@@ -16,11 +16,10 @@ namespace MatchingCode
         private string excelc = "";
         private string filepath = "";
         private string existeddata = "";
-        private Workbook workbook = null;
+        private Workbook workbook;
         private int progressnumber = 5 * 2000;
-
-        private const string codetype = "2";
-
+        private string codetype = "2";
+        private bool IfParallelRun;
         private ParallelOptions options = new ParallelOptions
         {
             MaxDegreeOfParallelism = 20
@@ -30,11 +29,19 @@ namespace MatchingCode
         {
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             InitializeComponent();
+
             rtbLogs.Text =
                 @"Noted:
 病例组:数据列A=>G，A:PATIENT_ID B:SEX C:AGE
 对比组:数据列A=>G，A:PATIENT_ID B:SEX C:AGE D:TEST_NO E:REPORT_ITEM_NAME F:RESULT G:SOURCE
-保证两份数据文件中的表头与程序中的标注一致，否则会报错(卡住)";           
+保证两份数据文件中的表头与程序中的标注一致，否则会报错(卡住)";
+
+            this.cbxParallelRun.Checked = true;
+            this.cbxParallelRun.Enabled = false;
+            IfParallelRun = true;
+
+            this.btnExe.Enabled = false;
+
         }
 
         private void btnExe_Click(object sender, EventArgs e)
@@ -217,6 +224,11 @@ namespace MatchingCode
                 filepath = Path.GetDirectoryName(dialog.FileName) + "\\Log-" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
                 File.AppendAllText(filepath, Environment.NewLine + "[" + DateTime.Now.ToString() + "]" + "系统初始化开始处理..." + Environment.NewLine);
             }
+            if (exceld != "" && excelc != "")
+            {
+                this.btnExe.Enabled = true;
+                this.cbxParallelRun.Enabled = false;
+            }
         }
 
         private void btnOpen2_Click(object sender, EventArgs e)
@@ -232,10 +244,17 @@ namespace MatchingCode
                 tbxExcelC.Text = dialog.FileName;
                 excelc = dialog.FileName;
             }
+            if (exceld != "" && excelc != "")
+            {
+                this.btnExe.Enabled = true;
+                this.cbxParallelRun.Enabled = false;
+            }
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-        { 
+        {
+            existeddata = "";
+            workbook = null;
             if (exceld != "" && excelc != "")
             {
                 bool IsCompleted = false;
@@ -269,76 +288,141 @@ namespace MatchingCode
                     {
                         wb.AutoFitColumn(col, 0, cells.MaxRow);
                     }
-                    var result = Parallel.For(1, cells.Rows.Count + 1, options ,
-               i =>
-               {
-                   Interlocked.Add(ref progressnumber, int.Parse(Math.Floor(1.0 / double.Parse(cells.Count.ToString()) * 100 * 2000).ToString()));
-                   int num = progressnumber / 2000;
-                   double number = double.Parse(progressnumber.ToString()) / 2000.0;
-                   if (cells["A" + i.ToString()] != null && cells["A" + i.ToString()].Value != null)
+
+                    if (IfParallelRun)
+                    {
+                        var result = Parallel.For(1, cells.Rows.Count + 1, options,
+                   i =>
                    {
-                       if (!string.IsNullOrEmpty(cells["A" + i.ToString()].Value.ToString())) //患者识别号不为空
+                       Interlocked.Add(ref progressnumber, int.Parse(Math.Floor(1.0 / double.Parse(cells.Count.ToString()) * 100 * 2000).ToString()));
+                       int num = progressnumber / 2000;
+                       double number = double.Parse(progressnumber.ToString()) / 2000.0;
+                       if (cells["A" + i.ToString()] != null && cells["A" + i.ToString()].Value != null)
                        {
-                           string comparedNum = "";
-                           try
-                           {
-                               comparedNum = GetComparedData(dtExcelC, cells["B" + i.ToString()].Value.ToString(), int.Parse(cells["C" + i.ToString()].Value.ToString().Replace("岁", "")), existeddata);
-                           }
-                           catch (Exception ex)
-                           {
-                               if (i != 1)
+                           if (!string.IsNullOrEmpty(cells["A" + i.ToString()].Value.ToString())) //患者识别号不为空
+                       {
+                               string comparedNum = "";
+                               try
                                {
-                                   backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "病例组字段数据不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
+                                   comparedNum = GetComparedData(dtExcelC, cells["B" + i.ToString()].Value.ToString(), int.Parse(cells["C" + i.ToString()].Value.ToString().Replace("岁", "")), existeddata);
                                }
-                           }
-                           if (comparedNum != "")
-                           {
-                               lock (existeddata)
+                               catch (Exception ex)
                                {
-                                   existeddata += comparedNum + "-";
-                               }
-                               EnumerableRowCollection<DataRow> query = from person in dtExcelC.AsEnumerable()
-                                                                        where person.Field<string>("PATIENT_ID") == comparedNum
-                                                                        select person;
-                               DataTable newDT = query.AsDataView().ToTable();
-                               if (newDT.Rows.Count > 0)
-                               {
-                                   try
+                                   if (i != 1)
                                    {
-                                       lock (cells)
+                                       backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "病例组字段数据不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
+                                   }
+                               }
+                               if (comparedNum != "")
+                               {
+                                   lock (existeddata)
+                                   {
+                                       existeddata += comparedNum + "-";
+                                   }
+                                   EnumerableRowCollection<DataRow> query = from person in dtExcelC.AsEnumerable()
+                                                                            where person.Field<string>("PATIENT_ID") == comparedNum
+                                                                            select person;
+                                   DataTable newDT = query.AsDataView().ToTable();
+                                   if (newDT.Rows.Count > 0)
+                                   {
+                                       try
                                        {
-                                           cells["I" + i.ToString()].PutValue(newDT.Rows[0]["PATIENT_ID"].ToString());
-                                           cells["J" + i.ToString()].PutValue(newDT.Rows[0]["SEX"].ToString());
-                                           cells["K" + i.ToString()].PutValue(newDT.Rows[0]["AGE"].ToString());
-                                           cells["L" + i.ToString()].PutValue(newDT.Rows[0]["TEST_NO"].ToString());
-                                           cells["M" + i.ToString()].PutValue(newDT.Rows[0]["REPORT_ITEM_NAME"].ToString());
-                                           cells["N" + i.ToString()].PutValue(newDT.Rows[0]["RESULT"].ToString());
-                                           cells["O" + i.ToString()].PutValue(newDT.Rows[0]["SOURCE"].ToString());
+                                           lock (cells)
+                                           {
+                                               cells["I" + i.ToString()].PutValue(newDT.Rows[0]["PATIENT_ID"].ToString());
+                                               cells["J" + i.ToString()].PutValue(newDT.Rows[0]["SEX"].ToString());
+                                               cells["K" + i.ToString()].PutValue(newDT.Rows[0]["AGE"].ToString());
+                                               cells["L" + i.ToString()].PutValue(newDT.Rows[0]["TEST_NO"].ToString());
+                                               cells["M" + i.ToString()].PutValue(newDT.Rows[0]["REPORT_ITEM_NAME"].ToString());
+                                               cells["N" + i.ToString()].PutValue(newDT.Rows[0]["RESULT"].ToString());
+                                               cells["O" + i.ToString()].PutValue(newDT.Rows[0]["SOURCE"].ToString());
+                                           }
+                                           backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "查询到对照组编号：" + newDT.Rows[0]["PATIENT_ID"].ToString() + Environment.NewLine);
                                        }
-                                       backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "查询到对照组编号：" + newDT.Rows[0]["PATIENT_ID"].ToString() + Environment.NewLine);
+                                       catch (Exception ex)
+                                       {
+                                           backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "对比组字段不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
+                                       }
                                    }
-                                   catch (Exception ex)
+                                   else
                                    {
-                                       backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "对比组字段不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
+                                       backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "没有合适的匹配。" + Environment.NewLine);
                                    }
-                               }
-                               else
-                               {
-                                   backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "没有合适的匹配。" + Environment.NewLine);
                                }
                            }
+                           else
+                           {
+                               backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "PATIENT_ID为空。" + Environment.NewLine);
+                           }
                        }
-                       else
-                       {
-                           backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "PATIENT_ID为空。" + Environment.NewLine);
-                       }
-                   }
-               });
-                    if (result.IsCompleted)
-                        IsCompleted = true;
+                   });
+                        if (result.IsCompleted)
+                            IsCompleted = true;
+                    }
+                    else 
+                    {
+                        for (int i = 1; i < cells.Rows.Count + 1; i++)
+                        {
+                            progressnumber += int.Parse(Math.Floor(1.0 / double.Parse(cells.Count.ToString()) * 100 * 2000).ToString());
+                            int num = progressnumber / 2000;
+                            double number = double.Parse(progressnumber.ToString()) / 2000.0;
+                            if (cells["A" + i.ToString()] != null && cells["A" + i.ToString()].Value != null)
+                            {
+                                if (!string.IsNullOrEmpty(cells["A" + i.ToString()].Value.ToString())) //患者识别号不为空
+                                {
+                                    string comparedNum = "";
+                                    try
+                                    {
+                                        comparedNum = GetComparedData(dtExcelC, cells["B" + i.ToString()].Value.ToString(), int.Parse(cells["C" + i.ToString()].Value.ToString().Replace("岁", "")), existeddata);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        if (i != 1)
+                                        {
+                                            backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "病例组字段数据不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
+                                        }
+                                    }
+                                    if (comparedNum != "")
+                                    {
+                                        existeddata += comparedNum + "-";
+                                        EnumerableRowCollection<DataRow> query = from person in dtExcelC.AsEnumerable()
+                                                                                 where person.Field<string>("PATIENT_ID") == comparedNum
+                                                                                 select person;
+                                        DataTable newDT = query.AsDataView().ToTable();
+                                        if (newDT.Rows.Count > 0)
+                                        {
+                                            try
+                                            {
+                                                cells["I" + i.ToString()].PutValue(newDT.Rows[0]["PATIENT_ID"].ToString());
+                                                cells["J" + i.ToString()].PutValue(newDT.Rows[0]["SEX"].ToString());
+                                                cells["K" + i.ToString()].PutValue(newDT.Rows[0]["AGE"].ToString());
+                                                cells["L" + i.ToString()].PutValue(newDT.Rows[0]["TEST_NO"].ToString());
+                                                cells["M" + i.ToString()].PutValue(newDT.Rows[0]["REPORT_ITEM_NAME"].ToString());
+                                                cells["N" + i.ToString()].PutValue(newDT.Rows[0]["RESULT"].ToString());
+                                                cells["O" + i.ToString()].PutValue(newDT.Rows[0]["SOURCE"].ToString());
+                                                backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "查询到对照组编号：" + newDT.Rows[0]["PATIENT_ID"].ToString() + Environment.NewLine);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "对比组字段不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "没有合适的匹配。" + Environment.NewLine);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "PATIENT_ID为空。" + Environment.NewLine);
+                                }
+                            }
+                        }
+                    }
 
                 }
-                if (!IsCompleted)
+                if (!IsCompleted && IfParallelRun)
                     Thread.Sleep(2000);
                 backgroundWorker1.ReportProgress(100, "[" + DateTime.Now.ToString() + "]" + "[" + 100 + "%]" + "执行完毕。请检查文件输出。" + Environment.NewLine);
             }
@@ -411,6 +495,11 @@ namespace MatchingCode
             {
                 File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "程序窗口意外关闭，程序已退出。" + Environment.NewLine);
             }
+        }
+
+        private void cbxParallelRun_CheckedChanged(object sender, EventArgs e)
+        {
+            IfParallelRun = cbxParallelRun.Checked;
         }
     }
 }

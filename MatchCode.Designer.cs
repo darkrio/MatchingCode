@@ -40,6 +40,7 @@ namespace MatchingCode
             this.btnOpen2 = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.pBarExecuting = new System.Windows.Forms.ProgressBar();
+            this.cbxParallelRun = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // txtLabel1
@@ -85,7 +86,7 @@ namespace MatchingCode
             this.rtbLogs.Location = new System.Drawing.Point(12, 82);
             this.rtbLogs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.rtbLogs.Name = "rtbLogs";
-            this.rtbLogs.Size = new System.Drawing.Size(745, 315);
+            this.rtbLogs.Size = new System.Drawing.Size(745, 449);
             this.rtbLogs.TabIndex = 4;
             this.rtbLogs.Text = "";
             this.rtbLogs.TextChanged += new System.EventHandler(this.rtbLogs_TextChanged);
@@ -93,7 +94,7 @@ namespace MatchingCode
             // btnExe
             // 
             this.btnExe.Font = new System.Drawing.Font("Microsoft YaHei UI", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnExe.Location = new System.Drawing.Point(642, 402);
+            this.btnExe.Location = new System.Drawing.Point(642, 539);
             this.btnExe.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExe.Name = "btnExe";
             this.btnExe.Size = new System.Drawing.Size(114, 36);
@@ -134,16 +135,29 @@ namespace MatchingCode
             // pBarExecuting
             // 
             this.pBarExecuting.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pBarExecuting.Location = new System.Drawing.Point(0, 443);
+            this.pBarExecuting.Location = new System.Drawing.Point(0, 582);
             this.pBarExecuting.Name = "pBarExecuting";
-            this.pBarExecuting.Size = new System.Drawing.Size(767, 29);
+            this.pBarExecuting.Size = new System.Drawing.Size(766, 29);
             this.pBarExecuting.TabIndex = 8;
+            // 
+            // cbxParallelRun
+            // 
+            this.cbxParallelRun.AutoSize = true;
+            this.cbxParallelRun.Font = new System.Drawing.Font("Microsoft YaHei UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.cbxParallelRun.Location = new System.Drawing.Point(525, 545);
+            this.cbxParallelRun.Name = "cbxParallelRun";
+            this.cbxParallelRun.Size = new System.Drawing.Size(104, 28);
+            this.cbxParallelRun.TabIndex = 9;
+            this.cbxParallelRun.Text = "并行计算";
+            this.cbxParallelRun.UseVisualStyleBackColor = true;
+            this.cbxParallelRun.CheckedChanged += new System.EventHandler(this.cbxParallelRun_CheckedChanged);
             // 
             // MatchCode
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(767, 472);
+            this.ClientSize = new System.Drawing.Size(766, 611);
+            this.Controls.Add(this.cbxParallelRun);
             this.Controls.Add(this.pBarExecuting);
             this.Controls.Add(this.btnOpen2);
             this.Controls.Add(this.btnOpen1);
@@ -177,6 +191,7 @@ namespace MatchingCode
         private System.Windows.Forms.Button btnOpen2;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.ProgressBar pBarExecuting;
+        private System.Windows.Forms.CheckBox cbxParallelRun;
     }
 }
 
