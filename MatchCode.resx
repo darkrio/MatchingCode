@@ -57,10 +57,450 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="txtLabel1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="txtLabel1.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft YaHei UI, 13.8pt</value>
+  </data>
+  <data name="txtLabel1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 8</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="txtLabel1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 0, 2, 0</value>
+  </data>
+  <data name="txtLabel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>210, 25</value>
+  </data>
+  <data name="txtLabel1.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="txtLabel1.Text" xml:space="preserve">
+    <value>病例组Excel文件路径：</value>
+  </data>
+  <data name="&gt;&gt;txtLabel1.Name" xml:space="preserve">
+    <value>txtLabel1</value>
+  </data>
+  <data name="&gt;&gt;txtLabel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtLabel1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;txtLabel1.ZOrder" xml:space="preserve">
+    <value>14</value>
+  </data>
+  <data name="txtLabel2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="txtLabel2.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft YaHei UI, 13.8pt</value>
+  </data>
+  <data name="txtLabel2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 42</value>
+  </data>
+  <data name="txtLabel2.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 0, 2, 0</value>
+  </data>
+  <data name="txtLabel2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>210, 25</value>
+  </data>
+  <data name="txtLabel2.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="txtLabel2.Text" xml:space="preserve">
+    <value>对照组Excel文件路径：</value>
+  </data>
+  <data name="&gt;&gt;txtLabel2.Name" xml:space="preserve">
+    <value>txtLabel2</value>
+  </data>
+  <data name="&gt;&gt;txtLabel2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtLabel2.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;txtLabel2.ZOrder" xml:space="preserve">
+    <value>13</value>
+  </data>
+  <data name="tbxExcelD.Location" type="System.Drawing.Point, System.Drawing">
+    <value>207, 8</value>
+  </data>
+  <data name="tbxExcelD.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 3, 2, 3</value>
+  </data>
+  <data name="tbxExcelD.Size" type="System.Drawing.Size, System.Drawing">
+    <value>293, 23</value>
+  </data>
+  <data name="tbxExcelD.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;tbxExcelD.Name" xml:space="preserve">
+    <value>tbxExcelD</value>
+  </data>
+  <data name="&gt;&gt;tbxExcelD.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tbxExcelD.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;tbxExcelD.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="tbxExcelC.Location" type="System.Drawing.Point, System.Drawing">
+    <value>207, 42</value>
+  </data>
+  <data name="tbxExcelC.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 3, 2, 3</value>
+  </data>
+  <data name="tbxExcelC.Size" type="System.Drawing.Size, System.Drawing">
+    <value>293, 23</value>
+  </data>
+  <data name="tbxExcelC.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;tbxExcelC.Name" xml:space="preserve">
+    <value>tbxExcelC</value>
+  </data>
+  <data name="&gt;&gt;tbxExcelC.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tbxExcelC.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;tbxExcelC.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="rtbLogs.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 70</value>
+  </data>
+  <data name="rtbLogs.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 3, 2, 3</value>
+  </data>
+  <data name="rtbLogs.Size" type="System.Drawing.Size, System.Drawing">
+    <value>580, 485</value>
+  </data>
+  <data name="rtbLogs.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="rtbLogs.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;rtbLogs.Name" xml:space="preserve">
+    <value>rtbLogs</value>
+  </data>
+  <data name="&gt;&gt;rtbLogs.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RichTextBox, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rtbLogs.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;rtbLogs.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="btnExe.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft YaHei UI, 13.8pt</value>
+  </data>
+  <data name="btnExe.Location" type="System.Drawing.Point, System.Drawing">
+    <value>499, 573</value>
+  </data>
+  <data name="btnExe.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 3, 2, 3</value>
+  </data>
+  <data name="btnExe.Size" type="System.Drawing.Size, System.Drawing">
+    <value>89, 31</value>
+  </data>
+  <data name="btnExe.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="btnExe.Text" xml:space="preserve">
+    <value>执行</value>
+  </data>
+  <data name="&gt;&gt;btnExe.Name" xml:space="preserve">
+    <value>btnExe</value>
+  </data>
+  <data name="&gt;&gt;btnExe.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnExe.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;btnExe.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="btnOpen1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>509, 6</value>
+  </data>
+  <data name="btnOpen1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 3, 2, 3</value>
+  </data>
+  <data name="btnOpen1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>73, 25</value>
+  </data>
+  <data name="btnOpen1.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="btnOpen1.Text" xml:space="preserve">
+    <value>加载</value>
+  </data>
+  <data name="&gt;&gt;btnOpen1.Name" xml:space="preserve">
+    <value>btnOpen1</value>
+  </data>
+  <data name="&gt;&gt;btnOpen1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnOpen1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;btnOpen1.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="btnOpen2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>509, 42</value>
+  </data>
+  <data name="btnOpen2.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 3, 2, 3</value>
+  </data>
+  <data name="btnOpen2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>73, 25</value>
+  </data>
+  <data name="btnOpen2.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="btnOpen2.Text" xml:space="preserve">
+    <value>加载</value>
+  </data>
+  <data name="&gt;&gt;btnOpen2.Name" xml:space="preserve">
+    <value>btnOpen2</value>
+  </data>
+  <data name="&gt;&gt;btnOpen2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnOpen2.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;btnOpen2.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
   <metadata name="backgroundWorker1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="pBarExecuting.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
+  </data>
+  <data name="pBarExecuting.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 618</value>
+  </data>
+  <data name="pBarExecuting.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 3, 2, 3</value>
+  </data>
+  <data name="pBarExecuting.Size" type="System.Drawing.Size, System.Drawing">
+    <value>599, 25</value>
+  </data>
+  <data name="pBarExecuting.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;pBarExecuting.Name" xml:space="preserve">
+    <value>pBarExecuting</value>
+  </data>
+  <data name="&gt;&gt;pBarExecuting.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ProgressBar, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;pBarExecuting.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;pBarExecuting.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="cbxParallelRun.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="cbxParallelRun.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft YaHei UI, 10.8pt</value>
+  </data>
+  <data name="cbxParallelRun.Location" type="System.Drawing.Point, System.Drawing">
+    <value>408, 561</value>
+  </data>
+  <data name="cbxParallelRun.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 3, 2, 3</value>
+  </data>
+  <data name="cbxParallelRun.Size" type="System.Drawing.Size, System.Drawing">
+    <value>88, 24</value>
+  </data>
+  <data name="cbxParallelRun.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="cbxParallelRun.Text" xml:space="preserve">
+    <value>并行计算</value>
+  </data>
+  <data name="&gt;&gt;cbxParallelRun.Name" xml:space="preserve">
+    <value>cbxParallelRun</value>
+  </data>
+  <data name="&gt;&gt;cbxParallelRun.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbxParallelRun.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;cbxParallelRun.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="cbxOutPutLog.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="cbxOutPutLog.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft YaHei UI, 10.8pt</value>
+  </data>
+  <data name="cbxOutPutLog.Location" type="System.Drawing.Point, System.Drawing">
+    <value>408, 588</value>
+  </data>
+  <data name="cbxOutPutLog.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 3, 2, 3</value>
+  </data>
+  <data name="cbxOutPutLog.Size" type="System.Drawing.Size, System.Drawing">
+    <value>88, 24</value>
+  </data>
+  <data name="cbxOutPutLog.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="cbxOutPutLog.Text" xml:space="preserve">
+    <value>输出日志</value>
+  </data>
+  <data name="&gt;&gt;cbxOutPutLog.Name" xml:space="preserve">
+    <value>cbxOutPutLog</value>
+  </data>
+  <data name="&gt;&gt;cbxOutPutLog.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbxOutPutLog.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;cbxOutPutLog.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="lblCalcType.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblCalcType.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 561</value>
+  </data>
+  <data name="lblCalcType.Size" type="System.Drawing.Size, System.Drawing">
+    <value>68, 17</value>
+  </data>
+  <data name="lblCalcType.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="lblCalcType.Text" xml:space="preserve">
+    <value>对照方式：</value>
+  </data>
+  <data name="&gt;&gt;lblCalcType.Name" xml:space="preserve">
+    <value>lblCalcType</value>
+  </data>
+  <data name="&gt;&gt;lblCalcType.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblCalcType.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;lblCalcType.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="cmbxCalcType.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 581</value>
+  </data>
+  <data name="cmbxCalcType.Size" type="System.Drawing.Size, System.Drawing">
+    <value>121, 25</value>
+  </data>
+  <data name="cmbxCalcType.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
+  </data>
+  <data name="&gt;&gt;cmbxCalcType.Name" xml:space="preserve">
+    <value>cmbxCalcType</value>
+  </data>
+  <data name="&gt;&gt;cmbxCalcType.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmbxCalcType.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;cmbxCalcType.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="nudCalcWidth.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="nudCalcWidth.Location" type="System.Drawing.Point, System.Drawing">
+    <value>152, 582</value>
+  </data>
+  <data name="nudCalcWidth.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 0</value>
+  </data>
+  <data name="nudCalcWidth.Size" type="System.Drawing.Size, System.Drawing">
+    <value>45, 23</value>
+  </data>
+  <data name="nudCalcWidth.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="&gt;&gt;nudCalcWidth.Name" xml:space="preserve">
+    <value>nudCalcWidth</value>
+  </data>
+  <data name="&gt;&gt;nudCalcWidth.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;nudCalcWidth.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;nudCalcWidth.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="lblPlusMinus.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblPlusMinus.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft YaHei UI, 10.5pt</value>
+  </data>
+  <data name="lblPlusMinus.Location" type="System.Drawing.Point, System.Drawing">
+    <value>135, 582</value>
+  </data>
+  <data name="lblPlusMinus.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 0</value>
+  </data>
+  <data name="lblPlusMinus.Size" type="System.Drawing.Size, System.Drawing">
+    <value>19, 20</value>
+  </data>
+  <data name="lblPlusMinus.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="lblPlusMinus.Text" xml:space="preserve">
+    <value>±</value>
+  </data>
+  <data name="&gt;&gt;lblPlusMinus.Name" xml:space="preserve">
+    <value>lblPlusMinus</value>
+  </data>
+  <data name="&gt;&gt;lblPlusMinus.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblPlusMinus.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;lblPlusMinus.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>7, 17</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>599, 643</value>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAEAgIAAAAEAIAAoCAEAFgAAACgAAACAAAAAAAEAAAEAIAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
@@ -1192,5 +1632,26 @@
         AEAQBAEAgAAAAAAAIAgCAIAgCAIAgMAAAAAAABAEAQBAEAQBAEAgAAAAAAAIAgCAIAgCAIAgEAAAAAAA
         BAEAQBAEAQBAEBgAAAAAGAYBgGAYBgGAYBg=
 </value>
+  </data>
+  <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 3, 2, 3</value>
+  </data>
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>615, 680</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>MatchingProgram</value>
+  </data>
+  <data name="&gt;&gt;backgroundWorker1.Name" xml:space="preserve">
+    <value>backgroundWorker1</value>
+  </data>
+  <data name="&gt;&gt;backgroundWorker1.Type" xml:space="preserve">
+    <value>System.ComponentModel.BackgroundWorker, System.ComponentModel.EventBasedAsync, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>MatchCode</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

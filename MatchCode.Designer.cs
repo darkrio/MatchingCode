@@ -41,87 +41,60 @@ namespace MatchingCode
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.pBarExecuting = new System.Windows.Forms.ProgressBar();
             this.cbxParallelRun = new System.Windows.Forms.CheckBox();
+            this.cbxOutPutLog = new System.Windows.Forms.CheckBox();
+            this.lblCalcType = new System.Windows.Forms.Label();
+            this.cmbxCalcType = new System.Windows.Forms.ComboBox();
+            this.nudCalcWidth = new System.Windows.Forms.NumericUpDown();
+            this.lblPlusMinus = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCalcWidth)).BeginInit();
             this.SuspendLayout();
             // 
             // txtLabel1
             // 
-            this.txtLabel1.AutoSize = true;
-            this.txtLabel1.Font = new System.Drawing.Font("Microsoft YaHei UI", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtLabel1.Location = new System.Drawing.Point(12, 9);
+            resources.ApplyResources(this.txtLabel1, "txtLabel1");
             this.txtLabel1.Name = "txtLabel1";
-            this.txtLabel1.Size = new System.Drawing.Size(253, 30);
-            this.txtLabel1.TabIndex = 0;
-            this.txtLabel1.Text = "病例组Excel文件路径：";
             // 
             // txtLabel2
             // 
-            this.txtLabel2.AutoSize = true;
-            this.txtLabel2.Font = new System.Drawing.Font("Microsoft YaHei UI", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtLabel2.Location = new System.Drawing.Point(12, 49);
+            resources.ApplyResources(this.txtLabel2, "txtLabel2");
             this.txtLabel2.Name = "txtLabel2";
-            this.txtLabel2.Size = new System.Drawing.Size(253, 30);
-            this.txtLabel2.TabIndex = 1;
-            this.txtLabel2.Text = "对照组Excel文件路径：";
             // 
             // tbxExcelD
             // 
-            this.tbxExcelD.Location = new System.Drawing.Point(256, 9);
-            this.tbxExcelD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            resources.ApplyResources(this.tbxExcelD, "tbxExcelD");
             this.tbxExcelD.Name = "tbxExcelD";
-            this.tbxExcelD.Size = new System.Drawing.Size(376, 27);
-            this.tbxExcelD.TabIndex = 2;
             this.tbxExcelD.TextChanged += new System.EventHandler(this.tbxExcelD_TextChanged);
             // 
             // tbxExcelC
             // 
-            this.tbxExcelC.Location = new System.Drawing.Point(256, 49);
-            this.tbxExcelC.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            resources.ApplyResources(this.tbxExcelC, "tbxExcelC");
             this.tbxExcelC.Name = "tbxExcelC";
-            this.tbxExcelC.Size = new System.Drawing.Size(376, 27);
-            this.tbxExcelC.TabIndex = 3;
             this.tbxExcelC.TextChanged += new System.EventHandler(this.tbxExcelC_TextChanged);
             // 
             // rtbLogs
             // 
-            this.rtbLogs.Location = new System.Drawing.Point(12, 82);
-            this.rtbLogs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            resources.ApplyResources(this.rtbLogs, "rtbLogs");
             this.rtbLogs.Name = "rtbLogs";
-            this.rtbLogs.Size = new System.Drawing.Size(745, 449);
-            this.rtbLogs.TabIndex = 4;
-            this.rtbLogs.Text = "";
             this.rtbLogs.TextChanged += new System.EventHandler(this.rtbLogs_TextChanged);
             // 
             // btnExe
             // 
-            this.btnExe.Font = new System.Drawing.Font("Microsoft YaHei UI", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnExe.Location = new System.Drawing.Point(642, 539);
-            this.btnExe.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            resources.ApplyResources(this.btnExe, "btnExe");
             this.btnExe.Name = "btnExe";
-            this.btnExe.Size = new System.Drawing.Size(114, 36);
-            this.btnExe.TabIndex = 5;
-            this.btnExe.Text = "执行";
             this.btnExe.UseVisualStyleBackColor = true;
             this.btnExe.Click += new System.EventHandler(this.btnExe_Click);
             // 
             // btnOpen1
             // 
-            this.btnOpen1.Location = new System.Drawing.Point(642, 7);
-            this.btnOpen1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            resources.ApplyResources(this.btnOpen1, "btnOpen1");
             this.btnOpen1.Name = "btnOpen1";
-            this.btnOpen1.Size = new System.Drawing.Size(94, 29);
-            this.btnOpen1.TabIndex = 6;
-            this.btnOpen1.Text = "加载";
             this.btnOpen1.UseVisualStyleBackColor = true;
             this.btnOpen1.Click += new System.EventHandler(this.btnOpen1_Click);
             // 
             // btnOpen2
             // 
-            this.btnOpen2.Location = new System.Drawing.Point(642, 47);
-            this.btnOpen2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            resources.ApplyResources(this.btnOpen2, "btnOpen2");
             this.btnOpen2.Name = "btnOpen2";
-            this.btnOpen2.Size = new System.Drawing.Size(94, 29);
-            this.btnOpen2.TabIndex = 7;
-            this.btnOpen2.Text = "加载";
             this.btnOpen2.UseVisualStyleBackColor = true;
             this.btnOpen2.Click += new System.EventHandler(this.btnOpen2_Click);
             // 
@@ -134,29 +107,57 @@ namespace MatchingCode
             // 
             // pBarExecuting
             // 
-            this.pBarExecuting.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pBarExecuting.Location = new System.Drawing.Point(0, 582);
+            resources.ApplyResources(this.pBarExecuting, "pBarExecuting");
             this.pBarExecuting.Name = "pBarExecuting";
-            this.pBarExecuting.Size = new System.Drawing.Size(766, 29);
-            this.pBarExecuting.TabIndex = 8;
             // 
             // cbxParallelRun
             // 
-            this.cbxParallelRun.AutoSize = true;
-            this.cbxParallelRun.Font = new System.Drawing.Font("Microsoft YaHei UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.cbxParallelRun.Location = new System.Drawing.Point(525, 545);
+            resources.ApplyResources(this.cbxParallelRun, "cbxParallelRun");
             this.cbxParallelRun.Name = "cbxParallelRun";
-            this.cbxParallelRun.Size = new System.Drawing.Size(104, 28);
-            this.cbxParallelRun.TabIndex = 9;
-            this.cbxParallelRun.Text = "并行计算";
             this.cbxParallelRun.UseVisualStyleBackColor = true;
             this.cbxParallelRun.CheckedChanged += new System.EventHandler(this.cbxParallelRun_CheckedChanged);
             // 
+            // cbxOutPutLog
+            // 
+            resources.ApplyResources(this.cbxOutPutLog, "cbxOutPutLog");
+            this.cbxOutPutLog.Name = "cbxOutPutLog";
+            this.cbxOutPutLog.UseVisualStyleBackColor = true;
+            this.cbxOutPutLog.CheckedChanged += new System.EventHandler(this.cbxOutPutLog_CheckedChanged);
+            // 
+            // lblCalcType
+            // 
+            resources.ApplyResources(this.lblCalcType, "lblCalcType");
+            this.lblCalcType.Name = "lblCalcType";
+            // 
+            // cmbxCalcType
+            // 
+            this.cmbxCalcType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbxCalcType.FormattingEnabled = true;
+            resources.ApplyResources(this.cmbxCalcType, "cmbxCalcType");
+            this.cmbxCalcType.Name = "cmbxCalcType";
+            this.cmbxCalcType.SelectedValueChanged += new System.EventHandler(this.cmbxCalcType_SelectedValueChanged);
+            // 
+            // nudCalcWidth
+            // 
+            resources.ApplyResources(this.nudCalcWidth, "nudCalcWidth");
+            this.nudCalcWidth.Name = "nudCalcWidth";
+            this.nudCalcWidth.ValueChanged += new System.EventHandler(this.nudCalcWidth_ValueChanged);
+            // 
+            // lblPlusMinus
+            // 
+            resources.ApplyResources(this.lblPlusMinus, "lblPlusMinus");
+            this.lblPlusMinus.CausesValidation = false;
+            this.lblPlusMinus.Name = "lblPlusMinus";
+            // 
             // MatchCode
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(766, 611);
+            this.Controls.Add(this.lblPlusMinus);
+            this.Controls.Add(this.nudCalcWidth);
+            this.Controls.Add(this.cmbxCalcType);
+            this.Controls.Add(this.lblCalcType);
+            this.Controls.Add(this.cbxOutPutLog);
             this.Controls.Add(this.cbxParallelRun);
             this.Controls.Add(this.pBarExecuting);
             this.Controls.Add(this.btnOpen2);
@@ -167,13 +168,10 @@ namespace MatchingCode
             this.Controls.Add(this.tbxExcelD);
             this.Controls.Add(this.txtLabel2);
             this.Controls.Add(this.txtLabel1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "MatchCode";
-            this.Text = "MatchingProgram";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MatchCode_FormClosed);
+            ((System.ComponentModel.ISupportInitialize)(this.nudCalcWidth)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -192,6 +190,11 @@ namespace MatchingCode
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.ProgressBar pBarExecuting;
         private System.Windows.Forms.CheckBox cbxParallelRun;
+        private System.Windows.Forms.CheckBox cbxOutPutLog;
+        private System.Windows.Forms.Label lblCalcType;
+        private System.Windows.Forms.ComboBox cmbxCalcType;
+        private System.Windows.Forms.NumericUpDown nudCalcWidth;
+        private System.Windows.Forms.Label lblPlusMinus;
     }
 }
 

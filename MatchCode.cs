@@ -18,12 +18,14 @@ namespace MatchingCode
         private string existeddata = "";
         private Workbook workbook;
         private int progressnumber = 5 * 2000;
-        private string codetype = "2";
+        private int codetype;
+        private int plusminusnum;
         private bool IfParallelRun;
-        private ParallelOptions options = new ParallelOptions
+        private readonly ParallelOptions options = new ParallelOptions
         {
-            MaxDegreeOfParallelism = 20
+            MaxDegreeOfParallelism = -1
         };
+        private bool IfOutPutLogs;
 
         public MatchCode()
         {
@@ -34,19 +36,39 @@ namespace MatchingCode
                 @"Noted:
 病例组:数据列A=>G，A:PATIENT_ID B:SEX C:AGE
 对比组:数据列A=>G，A:PATIENT_ID B:SEX C:AGE D:TEST_NO E:REPORT_ITEM_NAME F:RESULT G:SOURCE
-保证两份数据文件中的表头与程序中的标注一致，否则会报错(卡住)";
+保证两份数据文件中的表头与程序中的标注一致，否则会报错(卡住)" + Environment.NewLine;
 
-            this.cbxParallelRun.Checked = true;
-            this.cbxParallelRun.Enabled = false;
+            cbxParallelRun.Checked = true;
+            cbxParallelRun.Enabled = false;
             IfParallelRun = true;
 
-            this.btnExe.Enabled = false;
+            cbxOutPutLog.Checked = true;
+            IfOutPutLogs = true;
 
+            btnExe.Enabled = false;
+
+            cmbxCalcType.Items.Add("全部对照");
+            cmbxCalcType.Items.Add("区间对照");
+            cmbxCalcType.SelectedItem = "全部对照";
+            cmbxCalcType.Enabled = false;
+            lblPlusMinus.Visible = false;
+            nudCalcWidth.Visible = false;
+            nudCalcWidth.Value = 5;
+            plusminusnum = 5;
         }
 
         private void btnExe_Click(object sender, EventArgs e)
         {
             rtbLogs.Text = "";
+            btnOpen1.Enabled = false;
+            btnOpen2.Enabled = false;
+            cbxParallelRun.Enabled = false;
+            btnExe.Enabled = false;
+            cbxOutPutLog.Enabled = false;
+            cmbxCalcType.Enabled = false;
+            lblPlusMinus.Enabled = false;
+            nudCalcWidth.Enabled = false;
+
             backgroundWorker1.RunWorkerAsync();
         }
            
@@ -54,7 +76,7 @@ namespace MatchingCode
         {
             int count; string number; DataTable dt0;
             DataRow[] drs = dt.Select("SEX = '" + gender + "' and AGE = " + age);
-            if (codetype == "1")
+            if (codetype == 1)
             {
                 if (drs.Length > 0)
                 {
@@ -149,16 +171,16 @@ namespace MatchingCode
                     }
                 }
             }
-            else if (codetype == "2") 
+            else if (codetype == 2) 
             {
                 if (drs.Length > 0)
                 {
                     dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
                     if (dt0.Rows.Count == 0)
                     {
-                        drs = age >= 5
-                            ? dt.Select("SEX = '" + gender + "' and AGE > " + (age - 5).ToString() + " and AGE < " + (age + 5).ToString())
-                            : dt.Select("SEX = '" + gender + "' and AGE > 0 and AGE < " + (age + 5).ToString());
+                        drs = age >= plusminusnum
+                            ? dt.Select("SEX = '" + gender + "' and AGE > " + (age - plusminusnum).ToString() + " and AGE < " + (age + plusminusnum).ToString())
+                            : dt.Select("SEX = '" + gender + "' and AGE > 0 and AGE < " + (age + plusminusnum).ToString());
                         if (drs.Length > 0)
                         {
                             dt0 = FilterData(drs.CopyToDataTable(), dtesxit);
@@ -184,7 +206,7 @@ namespace MatchingCode
         private DataTable FilterData(DataTable oldTable, string e) 
         {
             DataTable newTable = oldTable.Clone();
-            foreach (var dr in from DataRow dr in oldTable.Rows
+            foreach (DataRow dr in from DataRow dr in oldTable.Rows
                                where !e.Contains(dr["PATIENT_ID"].ToString())
                                select dr)
             {
@@ -193,6 +215,7 @@ namespace MatchingCode
             newTable.AcceptChanges();
             return newTable;
         }
+
         private void tbxExcelD_TextChanged(object sender, EventArgs e)
         {
             if (tbxExcelD.Text != "")
@@ -220,14 +243,19 @@ namespace MatchingCode
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 tbxExcelD.Text = dialog.FileName;
-                exceld = dialog.FileName;             
-                filepath = Path.GetDirectoryName(dialog.FileName) + "\\Log-" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
-                File.AppendAllText(filepath, Environment.NewLine + "[" + DateTime.Now.ToString() + "]" + "系统初始化开始处理..." + Environment.NewLine);
+                exceld = dialog.FileName;
+                if (IfOutPutLogs)
+                {
+                    filepath = Path.GetDirectoryName(dialog.FileName) + "\\Log-" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+                    File.AppendAllText(filepath, Environment.NewLine + "[" + DateTime.Now.ToString() + "]" + "系统初始化开始处理..." + Environment.NewLine);
+                    cbxOutPutLog.Enabled = false;
+                }
             }
             if (exceld != "" && excelc != "")
             {
-                this.btnExe.Enabled = true;
-                this.cbxParallelRun.Enabled = false;
+                btnExe.Enabled = true;
+                cbxParallelRun.Enabled = true;
+                cmbxCalcType.Enabled = true;
             }
         }
 
@@ -246,8 +274,9 @@ namespace MatchingCode
             }
             if (exceld != "" && excelc != "")
             {
-                this.btnExe.Enabled = true;
-                this.cbxParallelRun.Enabled = false;
+                btnExe.Enabled = true;
+                cbxParallelRun.Enabled = true;
+                cmbxCalcType.Enabled = true;
             }
         }
 
@@ -258,7 +287,7 @@ namespace MatchingCode
             if (exceld != "" && excelc != "")
             {
                 bool IsCompleted = false;
-                backgroundWorker1.ReportProgress(0, "[" + DateTime.Now.ToString() + "]" + "[" + 0 + "%]" + "病例组与对比组文件输入程序中（大文件时间较长）..." + Environment.NewLine);
+                backgroundWorker1.ReportProgress(0, "[" + DateTime.Now.ToString() + "][" + 0 + "%]" + "病例组与对比组文件输入程序中（大文件时间较长）..." + Environment.NewLine);
                 DataTable dtExcelC;
                 try
                 {
@@ -267,7 +296,7 @@ namespace MatchingCode
                 }
                 catch (Exception ex)
                 {
-                    backgroundWorker1.ReportProgress(0, "[" + DateTime.Now.ToString() + "]" + "[" + 0 + "%]" + "对比组文件路径格式不正确。请检查后再执行。" + ex.Message + Environment.NewLine); return;
+                    backgroundWorker1.ReportProgress(0, "[" + DateTime.Now.ToString() + "][" + 0 + "%]" + "对比组文件路径格式不正确。请检查后再执行。" + ex.Message + Environment.NewLine); return;
                 }
                 try
                 {
@@ -275,13 +304,13 @@ namespace MatchingCode
                 }
                 catch (Exception ex)
                 {
-                    backgroundWorker1.ReportProgress(0, "[" + DateTime.Now.ToString() + "]" + "[" + 0 + "%]" + "病例组文件路径不正确。请检查后再执行。" + ex.Message + Environment.NewLine); return;
+                    backgroundWorker1.ReportProgress(0, "[" + DateTime.Now.ToString() + "][" + 0 + "%]" + "病例组文件路径不正确。请检查后再执行。" + ex.Message + Environment.NewLine); return;
                 }
                 for (int k = 0; k < workbook.Worksheets.Count; k++)
                 {
                     IsCompleted = false;
                     Worksheet wb = workbook.Worksheets[k];
-                    backgroundWorker1.ReportProgress(5, "[" + DateTime.Now.ToString() + "]" + "[" + 5 + "%]" + "导入成功开始对比操作..." + Environment.NewLine);
+                    backgroundWorker1.ReportProgress(5, "[" + DateTime.Now.ToString() + "][" + 5 + "%]" + "导入成功开始对比操作..." + Environment.NewLine);
                     Cells cells = wb.Cells;
                     SetHeaders(cells);
                     for (int col = 0; col < cells.MaxColumn; col++)
@@ -291,7 +320,7 @@ namespace MatchingCode
 
                     if (IfParallelRun)
                     {
-                        var result = Parallel.For(1, cells.Rows.Count + 1, options,
+                        ParallelLoopResult result = Parallel.For(1, cells.Rows.Count + 1, options,
                    i =>
                    {
                        Interlocked.Add(ref progressnumber, int.Parse(Math.Floor(1.0 / double.Parse(cells.Count.ToString()) * 100 * 2000).ToString()));
@@ -310,7 +339,7 @@ namespace MatchingCode
                                {
                                    if (i != 1)
                                    {
-                                       backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "病例组字段数据不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
+                                       backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "][" + number + "%]" + "病例组字段数据不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
                                    }
                                }
                                if (comparedNum != "")
@@ -337,27 +366,29 @@ namespace MatchingCode
                                                cells["N" + i.ToString()].PutValue(newDT.Rows[0]["RESULT"].ToString());
                                                cells["O" + i.ToString()].PutValue(newDT.Rows[0]["SOURCE"].ToString());
                                            }
-                                           backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "查询到对照组编号：" + newDT.Rows[0]["PATIENT_ID"].ToString() + Environment.NewLine);
+                                           backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "][" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "查询到对照组编号：" + newDT.Rows[0]["PATIENT_ID"].ToString() + Environment.NewLine);
                                        }
                                        catch (Exception ex)
                                        {
-                                           backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "对比组字段不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
+                                           backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "][" + number + "%]" + "对比组字段不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
                                        }
                                    }
                                    else
                                    {
-                                       backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "没有合适的匹配。" + Environment.NewLine);
+                                       backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "][" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "没有合适的匹配。" + Environment.NewLine);
                                    }
                                }
                            }
                            else
                            {
-                               backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "PATIENT_ID为空。" + Environment.NewLine);
+                               backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "][" + number + "%]" + "PATIENT_ID为空。" + Environment.NewLine);
                            }
                        }
                    });
                         if (result.IsCompleted)
+                        {
                             IsCompleted = true;
+                        }
                     }
                     else 
                     {
@@ -379,7 +410,7 @@ namespace MatchingCode
                                     {
                                         if (i != 1)
                                         {
-                                            backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "病例组字段数据不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
+                                            backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "][" + number + "%]" + "病例组字段数据不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
                                         }
                                     }
                                     if (comparedNum != "")
@@ -400,22 +431,22 @@ namespace MatchingCode
                                                 cells["M" + i.ToString()].PutValue(newDT.Rows[0]["REPORT_ITEM_NAME"].ToString());
                                                 cells["N" + i.ToString()].PutValue(newDT.Rows[0]["RESULT"].ToString());
                                                 cells["O" + i.ToString()].PutValue(newDT.Rows[0]["SOURCE"].ToString());
-                                                backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "查询到对照组编号：" + newDT.Rows[0]["PATIENT_ID"].ToString() + Environment.NewLine);
+                                                backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "][" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "查询到对照组编号：" + newDT.Rows[0]["PATIENT_ID"].ToString() + Environment.NewLine);
                                             }
                                             catch (Exception ex)
                                             {
-                                                backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "对比组字段不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
+                                                backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "][" + number + "%]" + "对比组字段不正确，请检查后再执行。" + ex.Message + Environment.NewLine);
                                             }
                                         }
                                         else
                                         {
-                                            backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "没有合适的匹配。" + Environment.NewLine);
+                                            backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "][" + number + "%]" + "编号：" + cells["A" + i.ToString()].Value.ToString() + "没有合适的匹配。" + Environment.NewLine);
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "]" + "[" + number + "%]" + "PATIENT_ID为空。" + Environment.NewLine);
+                                    backgroundWorker1.ReportProgress(num, "[" + DateTime.Now.ToString() + "][" + number + "%]" + "PATIENT_ID为空。" + Environment.NewLine);
                                 }
                             }
                         }
@@ -423,8 +454,11 @@ namespace MatchingCode
 
                 }
                 if (!IsCompleted && IfParallelRun)
+                {
                     Thread.Sleep(2000);
-                backgroundWorker1.ReportProgress(100, "[" + DateTime.Now.ToString() + "]" + "[" + 100 + "%]" + "执行完毕。请检查文件输出。" + Environment.NewLine);
+                }
+
+                backgroundWorker1.ReportProgress(100, "[" + DateTime.Now.ToString() + "][" + 100 + "%]" + "执行完毕。请检查文件输出。" + Environment.NewLine);
             }
         }
 
@@ -452,9 +486,18 @@ namespace MatchingCode
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             string message = e.UserState.ToString();
-            rtbLogs.Text += message;
+            ReportProgress(message);
             pBarExecuting.Value = e.ProgressPercentage;
-            File.AppendAllText(filepath, message);
+        }
+
+        private void ReportProgress(string message) 
+        {
+            rtbLogs.Text += message;
+            if (IfOutPutLogs)
+            {
+                if (filepath != "")
+                    File.AppendAllText(filepath, message);
+            }
         }
 
         private void BackgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -462,11 +505,22 @@ namespace MatchingCode
             try
             {
                 workbook.Save(exceld);
-                File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "异步程序处理完成。" + Environment.NewLine);
+                ReportProgress("[" + DateTime.Now.ToString() + "]" + "异步程序处理完成。" + Environment.NewLine);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "异步程序处理完成，程序异常已退出。" + Environment.NewLine);
+                ReportProgress("[" + DateTime.Now.ToString() + "]" + "异步程序处理完成，程序异常已退出。" + ex.Message + Environment.NewLine);
+            }
+            finally 
+            {
+                btnOpen1.Enabled = true;
+                btnOpen2.Enabled = true;
+                cbxParallelRun.Enabled = true;
+                btnExe.Enabled = true;
+                cbxOutPutLog.Enabled = true;
+                cmbxCalcType.Enabled = true;
+                lblPlusMinus.Enabled = true;
+                nudCalcWidth.Enabled = true;
             }
         }
 
@@ -482,24 +536,70 @@ namespace MatchingCode
             {
                 try
                 {
+                    Thread.Sleep(6000);
                     workbook.Save(exceld);
-                    File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "程序已退出，文件已保存。" + Environment.NewLine);
+                    if (IfOutPutLogs)
+                    {
+                        File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "程序已退出，文件已保存。" + Environment.NewLine);
+                    }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "程序已退出。" + Environment.NewLine);
+                    if (IfOutPutLogs)
+                    {
+                        File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "程序窗口意外关闭，程序已退出。" + ex.Message + Environment.NewLine);
+                    }
                 }
 
             }
             else if (filepath != "")
             {
-                File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "程序窗口意外关闭，程序已退出。" + Environment.NewLine);
+                if (IfOutPutLogs)
+                {
+                    File.AppendAllText(filepath, "[" + DateTime.Now.ToString() + "]" + "程序已退出。" + Environment.NewLine);
+                }
             }
         }
 
         private void cbxParallelRun_CheckedChanged(object sender, EventArgs e)
         {
             IfParallelRun = cbxParallelRun.Checked;
+        }
+
+        private void cbxOutPutLog_CheckedChanged(object sender, EventArgs e)
+        {
+            IfOutPutLogs = cbxOutPutLog.Checked;
+        }
+
+        private void cmbxCalcType_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (exceld != "" && excelc != "")
+            {
+                if (cmbxCalcType.SelectedItem.ToString() == "区间对照")
+                {
+                    codetype = 2;
+                    lblPlusMinus.Visible = true;
+                    nudCalcWidth.Visible = true;
+                    plusminusnum = (int)nudCalcWidth.Value;
+                    ReportProgress("[" + DateTime.Now.ToString() + "]" + "对照方式设置为区间对照，对照区间为±" + plusminusnum + "。" + Environment.NewLine);
+                }
+                else
+                {
+                    codetype = 1;
+                    lblPlusMinus.Visible = false;
+                    nudCalcWidth.Visible = false;
+                    ReportProgress("[" + DateTime.Now.ToString() + "]" + "对照方式设置为全部对照。" + Environment.NewLine);
+                }
+            }
+        }
+
+        private void nudCalcWidth_ValueChanged(object sender, EventArgs e)
+        {
+            if (exceld != "" && excelc != "")
+            {
+                plusminusnum = (int)nudCalcWidth.Value;
+                ReportProgress("[" + DateTime.Now.ToString() + "]" + "对照区间改为±" + plusminusnum + "。" + Environment.NewLine);
+            }
         }
     }
 }
